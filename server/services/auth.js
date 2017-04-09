@@ -74,11 +74,17 @@ function signup({ email, password, req }) {
 function login({ email, password, req }) {
   return new Promise((resolve, reject) => {
     passport.authenticate('local', (err, user) => {
-      if (!user) { reject('Invalid credentials.') }
+      if (err || !user) { reject('Invalid credentials.') }
 
       req.login(user, () => resolve(user));
     })({ body: { email, password } });
   });
 }
 
-module.exports = { signup, login };
+function logout(req) {
+  const user = req.user;
+  req.logout();
+  return user;
+}
+
+module.exports = { signup, login, logout };
